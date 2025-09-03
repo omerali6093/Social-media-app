@@ -18,7 +18,7 @@
 
     <section>
 
-        <div class="form-container bg-white h-115 w-[400px] rounded-2xl">
+        <div class="form-container bg-white h-115 w-[400px] rounded-2xl" id="form-container">
 
             <div class="register-container">
 
@@ -50,7 +50,7 @@
 
     <section>
 
-        <div class="w-[650px] min-h-[400px] bg-white rounded-2xl container-content">
+        <div class="w-[650px] min-h-[400px] bg-white rounded-2xl container-content" style="display: none;" id="container-content">
 
             <div class="main-section">
 
@@ -63,7 +63,7 @@
                         <img src="./images/profile-pic/user.png" alt="" onclick="showDropDown()" class="cursor-pointer">
                         <div id="dropDown" class="dropdown-content">
                             <a href="#">Setting</a>
-                            <a href="#">Logout</a>
+                            <a class="cursor-pointer hidden" id="logout-button">Logout</a>
                         </div>
                     </div>
                 </div>
@@ -75,9 +75,11 @@
                         placeholder="What's on your mind?"></textarea>
 
                     <div class="buttons flex items-center justify-between">
-                        <button
+                        <!-- <button
                             class="border border-1 border-gray-400 text-black rounded-lg img-button cursor-pointer">Add
-                            Image</button>
+                            Image</button> -->
+
+                            <input type="file" name="" id="" class="border border-1 border-gray-400 text-black rounded-lg img-button cursor-pointer">
                         <button
                             class="bg-blue-400 text-white rounded-lg post-button rounded-md cursor-pointer" id="addPost">Post</button>
                     </div>
@@ -90,27 +92,26 @@
 
                     <div id="user-feed">
                         
-                         <div class="post-card border border-1 border-gray-300 rounded-md">
+                         <!-- <div class="post-card border border-1 border-gray-300 rounded-md">
                             <div class="img-name-sect flex items-center gap-3">
                                 <img src="./images/profile-pic/user.png" alt="">
                                 <div class="name">
-                                    <p>Omer Ali</p>
+                                    
                                 </div>
                             </div>
     
                             <div class="content">
-                                <p>hey jason i am going to picnic today with family so what the plan for another weeken its
-                                    an amazing for me relief for 2 day and feels like a heaven</p>
+                                
                             </div>
     
                             <div class="buttons-card flex items-center justify-end gap-3">
                                 <div class="flex items-center gap-1">
                                     <i class="fa-regular fa-heart text-[20px]"></i>
-                                    <span>0</span>
+                                    
                                 </div>
                                 <i class="fa-solid fa-trash text-[20px] cursor-pointer"></i>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
 

@@ -5,15 +5,16 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
 //console.log(supabase);
 
 
-
 const userFeed = document.getElementById("user-feed");
 const postBtn = document.getElementById("addPost");
 const userInput = document.getElementById("userinput");
 const signUpBtn = document.getElementById("signup");
 const loginBtn = document.getElementById("login");
+const logoutBtn = document.getElementById("logout-button");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password")
-
+const postContainer = document.getElementById("container-content");
+const formContainer = document.getElementById("form-container");
 
 signUpBtn.addEventListener("click", async () => {
 
@@ -31,129 +32,181 @@ signUpBtn.addEventListener("click", async () => {
 })
 
 loginBtn.addEventListener("click", async () => {
-    console.log("loginbtn clicked");
-    
-    const {data, error} = await supabase.auth.signInWithPassword({
+
+    const { data, error } = await supabase.auth.signInWithPassword({
         email: emailInput.value,
         password: passwordInput.value,
     });
 
-    if(error) {
+    if (error) {
         alert(error.message)
-    } 
-
-    if(data) {
+    } else {
+        alert("Successfully logged in");
         showPost()
     }
-})
 
 
-async function loadPost () {
-    const {
-        data: {session},
-    } = await await supabase.auth.getSession();
+});
 
-    if(!session) {
-        alert("Please login first")
-        return
+logoutBtn.addEventListener("click", async () => {
+    await supabase.auth.signOut();
+
+    formContainer.style.display = "block";
+    postContainer.style.display = "none";
+
+    if (logoutBtn) logoutBtn.classList.add("hidden");
+    alert("Successfully logged out")
+
+});
+
+async function showPost() {
+
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+        console.log("Please login first");
+        formContainer.style.display = "block";
+        postContainer.style.display = "none";
+        return;
     }
 
-    showPost()
+    formContainer.style.display = "none";
+    postContainer.style.display = "block";
+    if (logoutBtn) logoutBtn.classList.remove("hidden");
+
+    loadPost()
 
 }
 
+async function loadPost() {
 
+    const { data: { user } } = await supabase.auth.getUser();
+    console.log("User =>", user);
+    
+    
 
-
-async function showPost() {
-    const { data, error } = await supabase
-        .from("posting")
-        .select("*")
-
-    if (error) {
-        console.log("Eroor fetching posts", error);
-        return;
+    if (!user) {
+        alert("Please login first");
+        return
     }
 
     userFeed.innerHTML = "";
 
+    const { data , error } = await supabase
+        .from("posting")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+
+    if (error) {
+        alert(error.message)
+    }
+
     data.forEach((post) => {
 
-        const postCard = document.createElement("div");
-        postCard.className = "post-card border border-1 border-gray-300 rounded-md p-3 mt-3";
-        postCard.dataset.id = post.id;
 
-        // Profile section
+        const postCard = document.createElement("div")
+        postCard.className = "post-card border border-1 border-gray-300 rounded-md";
 
-        const profile = document.createElement("div");
-        profile.className = "img-name-sect flex items-center gap-3";
-        profile.innerHTML = `
-        <img src="./images/profile-pic/user.png" alt="" class="w-8 h-8">
-      <div class="name"><p>Anonymous</p></div>
+        const imageSect = document.createElement("div");
+        imageSect.className = "img-name-sect flex items-center gap-3"
+
+        imageSect.innerHTML = `
+                                        <img src="./images/profile-pic/user.png" alt="">
+                                <div class="name">
+                                    <p>Anonymus</p>
+                                </div>
         `;
 
-        // content section
-        const content = document.createElement("div");
+        const content = document.createElement("div")
         content.className = "content";
-        content.textContent = post.content;
+        content.innerHTML = `
 
-        // button section
+        <p>${post.content}</p>
 
-        const buttons = document.createElement("div");
-        buttons.className = "buttons-card flex items-center justify-end gap-3 ";
+        `;
 
-        // like button
 
-        const likeButton = document.createElement("i");
-        likeButton.className = "fa-regular fa-heart text-[20px]";
+        const button = document.createElement("div")
+        button.className = "buttons-card flex items-center justify-end gap-3";
 
-        // delete button
+        const btnFlex = document.createElement("div")
+        btnFlex.className = "flex items-center gap-1";
 
-        const deleteBtn = document.createElement("i");
-        deleteBtn.className = "fa-solid fa-trash text-[20px] cursor-pointer";
-        deleteBtn.addEventListener("click", async () => {
-            const {error} = await supabase.from("posting").delete().eq("id", post.id);
+        const heartBtn = document.createElement("i")
+        heartBtn.className = "fa-regular fa-heart text-[20px]";
 
-            if(error) {
-                alert("Error in deleting post", error)
+        const delBtn = document.createElement("i")
+        delBtn.className = "fa-solid fa-trash text-[20px] cursor-pointer";
+
+        delBtn.onclick = async () => {
+            const { error } = await supabase
+                .from("posting")
+                .delete()
+                .eq("id", post.id)
+
+            if (error) {
+                alert("Some error while deleting the post")
             } else {
-                postCard.remove();
+                postCard.remove()
+                alert("Successfully deleted your post")
             }
-        });
+        }
 
-        buttons.appendChild(likeButton);
-        buttons.appendChild(deleteBtn);
 
-        postCard.appendChild(profile);
-        postCard.appendChild(content);
-        postCard.appendChild(buttons);
 
         userFeed.appendChild(postCard);
+        postCard.appendChild(imageSect)
+        postCard.appendChild(content)
+        button.appendChild(btnFlex)
+        button.appendChild(delBtn)
+        btnFlex.appendChild(heartBtn)
+        postCard.appendChild(button);
 
     })
 }
 
-
-
 postBtn.addEventListener("click", async () => {
-    let content = userInput.value.trim();
-    if (!content) return;
 
-    const { error } = await supabase
-        .from("posting")
-        .insert({ content });
+    const { data: { user } } = await supabase.auth.getUser();
 
-    if (error) {
-        console.log("Error inserting post", error);
-    } else {
-        userInput.innerHTML = "";
-        alert("Your post is added")
-        showPost()
+    if (!user) {
+        alert("Must login first!")
+        return
+    }
+
+    try {
+        const { data } = await supabase.from("posting")
+            .insert([
+                {
+                    content: userInput.value.trim(),
+                    user_id: user.id,
+                }
+            ]);
+
+        alert("Your post is successfully posted");
+        loadPost()
+
+    }
+    catch (error) {
+        if (error) alert(error.message)
+    }
+
+    finally {
+        userInput.value = "";
     }
 });
 
+(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
 
-showPost()
+    if (session) {
+        if (logoutBtn) logoutBtn.classList.remove("hidden");
+        showPost()
+    } else {
+        if (logoutBtn) logoutBtn.classList.add("hidden")
+    }
 
-
+})();
 
