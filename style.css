@@ -97,7 +97,7 @@ body {
 }
 
 .feed-section {
-    margin-top: 20px;
+    margin-top: 30px;
     padding-bottom: 30px;
 }
 
@@ -111,5 +111,25 @@ body {
 }
 
 .buttons-card {
+    margin-top: 25px;
+}
+
+.image {
+    margin-top: -50px;
+}
+
+.post-img {
+    margin-top: 20px;
+}
+
+.post-image {
     margin-top: 15px;
+}
+
+#file {
+    display: none;
+}
+
+.add-img {
+    padding: 8px 10px;
 }

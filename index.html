@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -25,32 +25,36 @@
                 <div class="logo-form flex items-center justify-center">
                     <img src="./images/form-logo/Chatter-logo.png" alt="" width="180px">
                 </div>
-                
+
                 <div class="top-form flex flex-col gap-1">
                     <h2 class="text-[20px] text-blue-600">Login or Create an account</h2>
                     <h1 class="text-[16px] font-semibold">Use email and password to continue</h1>
                 </div>
-    
+
                 <div class="email-password flex flex-col gap-4">
-                    <input type="text" placeholder="Username" id="username" class="border border border-gray-300 h-9 rounded-lg outline-none">
-                    <input type="text" placeholder="Email Address" id="email" class="border border border-gray-300 h-9 rounded-lg outline-none">
-                    <input type="text" placeholder="Password" id="password" class="border border border-gray-300 h-9 rounded-lg outline-none">
+                    <input type="text" placeholder="Username" id="username"
+                        class="border border border-gray-300 h-9 rounded-lg outline-none">
+                    <input type="text" placeholder="Email Address" id="email"
+                        class="border border border-gray-300 h-9 rounded-lg outline-none">
+                    <input type="text" placeholder="Password" id="password"
+                        class="border border border-gray-300 h-9 rounded-lg outline-none">
                 </div>
-    
+
                 <div class="signup-login flex flex-col w-full gap-4">
                     <button class="bg-blue-400 text-white rounded-3xl cursor-pointer" id="signup">Sign Up</button>
                     <button class="bg-blue-400 text-white rounded-3xl cursor-pointer" id="login">Login</button>
                 </div>
-    
+
             </div>
-            
+
         </div>
 
     </section>
 
     <section>
 
-        <div class="w-[650px] min-h-[400px] bg-white rounded-2xl container-content" style="display: none;" id="container-content">
+        <div class="w-[650px] min-h-[400px] bg-white rounded-2xl container-content" style="display: none;"
+            id="container-content">
 
             <div class="main-section">
 
@@ -68,7 +72,7 @@
                     </div>
                 </div>
 
-                <div class="post-section">
+                <div class="post-section relative">
                     <h1 class="text-[26px] font-semibold">Create Post</h1>
                     <textarea name="" id="userinput"
                         class="bg-white w-full rounded-lg border border-1 border-gray-400 outline-none" rows="4"
@@ -79,9 +83,19 @@
                             class="border border-1 border-gray-400 text-black rounded-lg img-button cursor-pointer">Add
                             Image</button> -->
 
-                            <input type="file" name="" id="" class="border border-1 border-gray-400 text-black rounded-lg img-button cursor-pointer">
-                        <button
-                            class="bg-blue-400 text-white rounded-lg post-button rounded-md cursor-pointer" id="addPost">Post</button>
+                        <div>
+                            <label for="file" class="bg-blue-400 text-white add-img rounded-md cursor-pointer" id="img-add-btn">Add Image</label>
+                            <input type="file" name="file" id="file">
+
+                            <div class="img-preview border w-25 h-25 hidden" id="img-preview">
+                                
+                            </div>
+
+                        </div>
+
+
+                        <button class="bg-blue-400 text-white rounded-lg post-button rounded-md cursor-pointer"
+                            id="addPost">Post</button>
                     </div>
 
 
@@ -91,8 +105,8 @@
                     <h1 class="text-[26px] font-semibold">Feed</h1>
 
                     <div id="user-feed">
-                        
-                         <!-- <div class="post-card border border-1 border-gray-300 rounded-md">
+
+                        <!-- <div class="post-card border border-1 border-gray-300 rounded-md">
                             <div class="img-name-sect flex items-center gap-3">
                                 <img src="./images/profile-pic/user.png" alt="">
                                 <div class="name">
@@ -158,5 +172,3 @@
 </body>
 
 </html>
-
-

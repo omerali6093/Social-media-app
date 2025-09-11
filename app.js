@@ -16,6 +16,41 @@ const passwordInput = document.getElementById("password")
 const postContainer = document.getElementById("container-content");
 const formContainer = document.getElementById("form-container");
 
+const imageInput = document.getElementById("file");
+const imagePreview = document.getElementById("img-preview")
+const imgAddBtn = document.getElementById("img-add-btn")
+
+let selectedImage = [];
+
+
+imageInput.addEventListener("change", async (e) => {
+
+    const imageFile = e.target.files[0];
+
+    if (selectedImage) {
+
+        selectedImage = imageFile;
+        console.log(selectedImage);
+        
+
+        imagePreview.innerHTML = "";
+
+        const image = document.createElement("img");
+        image.className = "object-cover w-full h-full"
+        image.src = URL.createObjectURL(selectedImage)
+
+        imagePreview.classList.remove("hidden")
+        imgAddBtn.classList.add("hidden")
+
+
+
+        imagePreview.appendChild(image)
+
+
+    }
+
+})
+
 signUpBtn.addEventListener("click", async () => {
 
     const { data, error } = await supabase.auth.signUp({
@@ -28,6 +63,8 @@ signUpBtn.addEventListener("click", async () => {
     } else {
         alert("Successfully signup please check your email");
         console.log(data);
+        emailInput.value = "";
+        passwordInput.value = ""
     }
 })
 
@@ -82,8 +119,8 @@ async function loadPost() {
 
     const { data: { user } } = await supabase.auth.getUser();
     console.log("User =>", user);
-    
-    
+
+
 
     if (!user) {
         alert("Please login first");
@@ -92,7 +129,7 @@ async function loadPost() {
 
     userFeed.innerHTML = "";
 
-    const { data , error } = await supabase
+    const { data, error } = await supabase
         .from("posting")
         .select("*")
         .eq("user_id", user.id)
@@ -124,8 +161,14 @@ async function loadPost() {
         content.innerHTML = `
 
         <p>${post.content}</p>
-
         `;
+
+        const postImgSect = document.createElement("div")
+        postImgSect.className = "w-full border border-gray-300 post-image rounded-md"
+
+        const postImage = document.createElement("img")
+        postImage.className = "w-full h-55 object-cover"
+        postImage.src = post.image_url;
 
 
         const button = document.createElement("div")
@@ -156,9 +199,11 @@ async function loadPost() {
 
 
 
-        userFeed.appendChild(postCard);
+        userFeed.appendChild(postCard)
         postCard.appendChild(imageSect)
         postCard.appendChild(content)
+        postCard.appendChild(postImgSect)
+        postImgSect.appendChild(postImage)
         button.appendChild(btnFlex)
         button.appendChild(delBtn)
         btnFlex.appendChild(heartBtn)
@@ -176,14 +221,45 @@ postBtn.addEventListener("click", async () => {
         return
     }
 
+    if (userInput.value == "") {
+        alert("Please write something!");
+
+        return;
+    }
+
+    let imageUrl = null;
+
+
     try {
+
+        if(selectedImage) {
+            const fileName = `${user.id}_${Date.now()}_${selectedImage.name}`
+            const {error} = await supabase.storage
+            .from("app-images")
+            .upload(fileName, selectedImage)
+
+            if(error) {
+                alert(error.message)
+                return;
+            }
+
+            const {data : urlData} = supabase.storage
+            .from("app-images")
+            .getPublicUrl(fileName)
+
+            imageUrl = urlData.publicUrl
+
+        }
+
         const { data } = await supabase.from("posting")
             .insert([
                 {
                     content: userInput.value.trim(),
                     user_id: user.id,
+                    image_url: imageUrl,
                 }
             ]);
+
 
         alert("Your post is successfully posted");
         loadPost()
@@ -195,6 +271,8 @@ postBtn.addEventListener("click", async () => {
 
     finally {
         userInput.value = "";
+        imagePreview.classList.add("hidden")
+        imgAddBtn.classList.remove("hidden")
     }
 });
 
@@ -209,4 +287,3 @@ postBtn.addEventListener("click", async () => {
     }
 
 })();
-
