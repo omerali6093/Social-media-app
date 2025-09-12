@@ -167,7 +167,7 @@ async function loadPost() {
         postImgSect.className = "w-full border border-gray-300 post-image rounded-md"
 
         const postImage = document.createElement("img")
-        postImage.className = "w-full h-55 object-cover"
+        postImage.className = "w-full h-65 object-cover"
         postImage.src = post.image_url;
 
 
